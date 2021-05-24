@@ -1,68 +1,79 @@
-# Article CMS (FlaskWebProject)
+# Project - Deploy an Article CMS to Azure
 
-This project is a Python web application built using Flask. The user can log in and out and create/edit articles. An article consists of a title, author, and body of text stored in an Azure SQL Server along with an image that is stored in Azure Blob Storage. You will also implement OAuth2 with Sign in with Microsoft using the `msal` library, along with app logging.
+This is a standard web application built with Flask and Python. It connects to backend database to store user information and post details. The app leverages Blob storage to keep post associated photos. So hosting the app can be straighforward:
 
-## Log In Credentials for FlaskWebProject
+1. A Python enabled environment
+2. Ability to connect to SQL database and Blob storage on Azure platform
+3. Authentication and authorization can be configured with Azure portal
+4. Logging and monitoring can be done using Azure provided features
 
-- Username: admin
-- Password: pass
+There are two hosting approaches can be considered:
 
-Or, once the MS Login button is implemented, it will automatically log into the `admin` account.
+### Azure Virtual Machines (VM)
 
-## Project Instructions (For Student)
+- VM provides full control, we can install any software packages and pick any hardware configurations as we might need. For this particular web app, we do not truly need this advantage VM offers
+- For scaling, we need to define VM Scale Sets or configure a Load Balancer which are additional work and skill set along with maintenance effort down the road
+- VM option ends up with higher monthly cost per [Microsoft provided calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
 
-You are expected to do the following to complete this project:
-1. Create a Resource Group in Azure.
-2. Create an SQL Database in Azure that contains a user table, an article table, and data in each table (populated with the scripts provided in the SQL Scripts folder).
-    - Provide a screenshot of the populated tables as detailed further below.
-3. Create a Storage Container in Azure for `images` to be stored in a container.
-    - Provide a screenshot of the storage endpoint URL as detailed further below.
-4. Add functionality to the Sign In With Microsoft button. 
-    - This will require completing TODOs in `views.py` with the `msal` library, along with appropriate registration in Azure Active Directory.
-5. Choose to use either a VM or App Service to deploy the FlaskWebProject to Azure. Complete the analysis template in `WRITEUP.md` (or include in the README) to compare the two options, as well as detail your reasoning behind choosing one or the other. Once you have made your choice, go through with deployment.
-6. Add logging for whether users successfully or unsuccessfully logged in.
-    - This will require completing TODOs in `__init__.py`, as well as adding logging where desired in `views.py`.
-7. To prove that the application in on Azure and working, go to the URL of your deployed app, log in using the credentials in this README, click the Create button, and create an article with the following data:
-	- Title: "Hello World!"
-	- Author: "Jane Doe"
-	- Body: "My name is Jane Doe and this is my first article!"
-	- Upload an image of your choice. Must be either a .png or .jpg.
-   After saving, click back on the article you created and provide a screenshot proving that it was created successfully. Please also make sure the URL is present in the screenshot.
-8. Log into the Azure Portal, go to your Resource Group, and provide a screenshot including all of the resources that were created to complete this project. (see sample screenshot in "example_images" folder)
-9. Take a screenshot of the Redirect URIs entered for your registered app, related to the MS Login button.
-10. Take a screenshot of your logs (can be from the Log stream in Azure) showing logging from an attempt to sign in with an invalid login, as well as a valid login.
+### Azure App Services (AP)
+- AP offers the same Windows/Linux hosting, and similar hardware configuration plus both auto vertical and horizontal scaling with a few clicks
+- AP approach is much cheaper compared to VM
+- The deployment, security management, monitoring, and maintenance workflows are pretty much the same between these 2 approaches
 
-## example_images Folder
+![alt text](../screenshots/00.%20COST%20-%20VM%20vs.%20APP.png)
 
-This folder contains sample screenshots that students are required to submit in order to prove they completed various tasks throughout the project.
+So AP gonna be the best choice for this type of web application
 
-1. article-cms-solution.png is a screenshot from running the FlaskWebProject on Azure and prove that the student was able to create a new entry. The Title, Author, and Body fields must be populated to prove that the data is being retrieved from the Azure SQL Database while the image on the right proves that an image was uploaded and pulled from Azure Blob Storage.
-2. azure-portal-resource-group.png is a screenshot from the Azure Portal showing all of the contents of the Resource Group the student needs to create. The resource group must (at least) contain the following:
-	- Storage Account
-	- SQL Server
-	- SQL Database
-	- Resources related to deploying the app
-3. sql-storage-solution.png is a screenshot showing the created tables and one query of data from the initial scripts.
-4. blob-solution.png is a screenshot showing an example of blob endpoints for where images are sent for storage.
-5. uri-redirects-solution.png is a screenshot of the redirect URIs related to Microsoft authentication.
-6. log-solution.png is a screenshot showing one potential form of logging with an "Invalid login attempt" and "admin logged in successfully", taken from the app's Log stream. You can customize your log messages as you see fit for these situations.
+## Screenshots
 
-## Dependencies
+### Create SQL server and Article CMS database
 
-1. A free Azure account
-2. A GitHub account
-3. Python 3.7 or later
-4. Visual Studio 2019 Community Edition (Free)
-5. The latest Azure CLI (helpful; not required - all actions can be done in the portal)
+- User table:
+![alt text](../screenshots/01.%20DB%20-%20Users%20Table.png)
 
-All Python dependencies are stored in the requirements.txt file. To install them, using Visual Studio 2019 Community Edition:
-1. In the Solution Explorer, expand "Python Environments"
-2. Right click on "Python 3.7 (64-bit) (global default)" and select "Install from requirements.txt"
+- Post table:
+![alt text](../screenshots/02.%20DB%20-%20Posts%20Table.png)
 
-## Troubleshooting
+### Create BLOB storage and container to store images
 
-- Mac users may need to install `unixodbc` as well as related drivers as shown below:
-    ```bash
-    brew install unixodbc
-    ```
-- Check [here](https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/install-microsoft-odbc-driver-sql-server-macos?view=sql-server-ver15) to add SQL Server drivers for Mac.
+- Storage endpoints:
+![alt text](../screenshots/03.%20BLOB%20-%20Endpoints.png)
+
+- Storage container "images":
+![alt text](../screenshots/04.%20BLOB%20-%20Container.png)
+ 
+### Deployment
+
+- Use "az" command to deploy the web app to Azure:
+  ```bash
+  az webapp up --sku F1 -n articlecmsapp --resource-group test --location westus
+  ```
+
+- It can be accessed via the link: https://articlecmsapp.azurewebsites.net/
+![alt text](../screenshots/05.%20APP%20-%20Login%20Screen.png)
+![alt text](../screenshots/06.%20APP%20-%20Main%20Screen.png)
+  
+### Create new post
+
+- Add a new post:
+![alt text](../screenshots/07.%20APP%20-%20New%20Post.png)
+
+- Verify image is uploaded and stored in the blob container:
+![alt text](../screenshots/08.%20APP%20-%20Verify%20New%20Post.png)
+
+### OAuth 2.0 - Signin with Microsoft
+![alt text](../screenshots/09.%20APP%20-%20MSAL.png)
+
+### Logging
+![alt text](../screenshots/10.%20APP%20-%20Log%20Stream.png)
+
+### Save logs to BLOB storage
+![alt text](../screenshots/11.%20APP%20-%20Logs%20to%20Blob.png)
+
+### Article CMS Resources
+![alt text](../screenshots/00.%20RG%20-%20All%20Resources.png)
+
+## Switching hosting solution
+
+Since the web app not only works with independent resources, including database, blob storage, logging but also was deployed on an isolated Linux host machine on either App Service or Virtual Machine, so switching between them is very easy, just redeploy the app to any hosting service and reconfigure MSALL URIs to the new host:
+![alt text](../screenshots/12.%20APP%20-%20Switching%20Host.png)
