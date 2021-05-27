@@ -9,18 +9,24 @@ This is a standard web application built with Flask and Python. It connects to b
 
 There are two hosting approaches can be considered:
 
-### Azure Virtual Machines (VM)
+1. Azure Virtual Machines (VM)
+2. Azure App Services (AP)
 
-- VM provides full control, we can install any software packages and pick any hardware configurations as we might need. For this particular web app, we do not truly need this advantage VM offers
-- For scaling, we need to define VM Scale Sets or configure a Load Balancer which are additional work and skill set along with maintenance effort down the road
-- VM option ends up with higher monthly cost per [Microsoft provided calculator](https://azure.microsoft.com/en-us/pricing/calculator/)
+Let see pros and cons from these approaches:
 
-### Azure App Services (AP)
-- AP offers the same Windows/Linux hosting, and similar hardware configuration plus both auto vertical and horizontal scaling with a few clicks
-- AP approach is much cheaper compared to VM
-- The deployment, security management, monitoring, and maintenance workflows are pretty much the same between these 2 approaches
+| Criteria |     VM     |     AP     | Choice |
+|--------------|------------|------------|:-------------:|
+| Python, Flask, remote debuging | Supported | Supported | VM, AP |
+| Small footprint, less dependencies | Full control of server, can install any software packages and apply any hardware configuration | Easy to deploy, quickly replace new codebase and add new libraries | AP |
+| Multi-tier web app, SSL endpoint access | Supported | Supported | VM, AP |
+| Ability to connect to SQL Database, Blob Storage | Supported | Supported | VM, AP |
+| Server security, OS patches/upgrades | Fully responsible | Fully managed by Azure | AP |
+| Logging, monitoring | Fully responsible | Fully managed by Azure | AP |
+| Scalability | Require configuring VM Scale Set or Load Balancer | Built-in service, integrated with Azure | AP |
+| Availability | Single Instance Virtual Machine using Standard HDD Managed Disks for Operating System Disks and Data Disks: 95% | Apps running in a customer subscription: 99.95% | AP |
+| Cost Effectiveness | Same configuration (1 Core, 1.75 GB RAM): $43.80/month | Same configuration (1 Core, 1.75 GB RAM): $13.14/month | AP |
 
-![alt text](./screenshots/00.%20COST%20-%20VM%20vs.%20APP.png)
+![alt text](./screenshots/00.%20COST%20-%20VM%20vs.%20AP.png)
 
 So AP gonna be the best choice for this type of web application
 
