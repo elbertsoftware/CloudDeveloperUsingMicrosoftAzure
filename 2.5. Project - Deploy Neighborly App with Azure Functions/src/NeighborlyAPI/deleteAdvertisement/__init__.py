@@ -9,15 +9,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     if id:
         try:
-            url = "localhost"  # TODO: Update with appropriate MongoDB connection information
+            # TODO: Update with appropriate MongoDB connection information
+            url = 'mongodb://neighborlycosmos:DUfTgid0ve7kaAaAoj4cDnuPYj2RoYlPNALBCEZDkCpFbNkOXRZF7ptlzKJtuIoYd2H95abeGH9RMLINrQA7cQ==@neighborlycosmos.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@neighborlycosmos@'
+
             client = pymongo.MongoClient(url)
-            database = client['azure']
+            database = client['neighborlydb']
             collection = database['advertisements']
-            
+
             query = {'_id': ObjectId(id)}
             result = collection.delete_one(query)
-            return func.HttpResponse("")
 
+            return func.HttpResponse("")
         except:
             print("could not connect to mongodb")
             return func.HttpResponse("could not connect to mongodb", status_code=500)

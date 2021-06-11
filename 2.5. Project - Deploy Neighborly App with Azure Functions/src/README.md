@@ -34,6 +34,17 @@ brew update && brew install azure-cli
 # install azure function core tools 
 brew tap azure/functions
 brew install azure-functions-core-tools@3
+
+# get the mongodb library
+brew tap mongodb/brew
+brew install mongodb-community@4.4
+
+brew link --overwrite mongodb-community
+brew link --overwrite mongodb-database-tools
+
+# check if mongoimport lib exists
+mongod --version
+mongoimport --version
 ```
 
 ## Project Instructions
@@ -44,21 +55,24 @@ In case you need to return to the project later on, it is suggested to store any
 
 We need to set up the Azure resource group, region, storage account, and an app name before we can publish.
 
-1. Create a resource group.
-2. Create a storage account (within the previously created resource group and region).
+1. Create a resource group - `test`
+
+2. Create a storage account (within the previously created resource group and region) - `neighborlystorage`
+
 3. Create an Azure Function App within the resource group, region and storage account. 
    - Note that app names need to be unique across all of Azure.
    - Make sure it is a Linux app, with a Python runtime.
 
-    Example of successful output, if creating the app `myneighborlyapiv1`:
+    Example of successful output, if creating the app `neighborlyapp`:
 
     ```bash
-    Your Linux function app 'myneighborlyapiv1', that uses a consumption plan has been successfully created but is not active until content is published using Azure Portal or the Functions Core Tools.
+    Your Linux function app 'myneighborlyapi', that uses a consumption plan has been successfully created but is not active until content is published using Azure Portal or the Functions Core Tools.
     ```
 
-4. Set up a Cosmos DB Account. You will need to use the same resource group, region and storage account, but can name the Cosmos DB account as you prefer. **Note:** This step may take a little while to complete (15-20 minutes in some cases).
+4. Set up a Cosmos DB Account - `neighborlycosmos`. You will need to use the same resource group, region and storage account, but can name the Cosmos DB account as you prefer. **Note:** This step may take a little while to complete (15-20 minutes in some cases).
 
-5. Create a MongoDB Database in CosmosDB Azure and two collections, one for `advertisements` and one for `posts`.
+5. Create a MongoDB Database - `neighborlydb` - in CosmosDB Azure and two collections, one for `advertisements` and one for `posts`.
+
 6. Print out your connection string or get it from the Azure Portal. Copy/paste the **primary connection** string.  You will use it later in your application.
 
     Example connection string output:
@@ -81,28 +95,7 @@ We need to set up the Azure resource group, region, storage account, and an app 
     }
     ```
 
-7. Import Sample Data Into MongoDB.
-   - Download dependencies:
-        ```bash
-        # get the mongodb library
-        brew install mongodb-community@4.2
-
-        # check if mongoimport lib exists
-        mongoimport --version
-        ```
-
-    - Import the data from the `sample_data` directory for Ads and Posts to initially fill your app.
-
-        Example successful import:
-        ```
-        Importing ads data ------------------->
-        2020-05-18T23:30:39.018-0400  connected to: mongodb://neighborlyapp.mongo.cosmos.azure.com:10255/
-        2020-05-18T23:30:40.344-0400  5 document(s) imported successfully. 0 document(s) failed to import.
-        ...
-        Importing posts data ------------------->
-        2020-05-18T23:30:40.933-0400  connected to: mongodb://neighborlyapp.mongo.cosmos.azure.com:10255/
-        2020-05-18T23:30:42.260-0400  4 document(s) imported successfully. 0 document(s) failed to import.
-        ```
+7. Sample Data Into MongoDB: Use Visual Studio Code Azure extension Database tab to import
 
 8. Hook up your connection string into the NeighborlyAPI server folder. You will need to replace the *url* variable with your own connection string you copy-and-pasted in the last step, along with some additional information.
     - Tip: Check out [this post](https://docs.microsoft.com/en-us/azure/cosmos-db/connect-mongodb-account) if you need help with what information is needed.
@@ -139,12 +132,15 @@ We need to set up the Azure resource group, region, storage account, and an app 
         # cd into NeighborlyAPI
         cd NeighborlyAPI
 
-        # install dependencies
-        pipenv install
+        # install dependencies (--skip-lock is needed when running on macOSSpip)
+        pipenv install --skip-lock
 
-        # go into the shell
+        # go into the shell (use 'exit' to deactivate the environment)
         pipenv shell
 
+        # cd into NeighborlyAPI again
+        cd NeighborlyAPI
+        
         # test func locally
         func start
         ```
@@ -193,7 +189,17 @@ We need to set up the Azure resource group, region, storage account, and an app 
 
         **Note:** It may take a minute or two for the endpoints to get up and running if you visit the URLs.
 
-        Save the function app url **https://<APP_NAME>.azurewebsites.net/api/** since you will need to update that in the client-side of the application.
+        Save the function app url **https://<APP_NAME>.azurewebsites.net/api/** since you will need to update that in the client-side of the application:
+
+        ```bash
+        createAdvertisement: https://neighborlyapp.azurewebsites.net/api/createadvertisement
+        deleteAdvertisement: https://neighborlyapp.azurewebsites.net/api/deleteadvertisement
+        getAdvertisement: https://neighborlyapp.azurewebsites.net/api/getadvertisement
+        getAdvertisements: https://neighborlyapp.azurewebsites.net/api/getadvertisements
+        getPost: https://neighborlyapp.azurewebsites.net/api/getpost
+        getPosts: https://neighborlyapp.azurewebsites.net/api/getposts
+        updateAdvertisement: https://neighborlyapp.azurewebsites.net/api/updateadvertisemen
+        ```
 
 ### II. Deploying the client-side Flask web application
 

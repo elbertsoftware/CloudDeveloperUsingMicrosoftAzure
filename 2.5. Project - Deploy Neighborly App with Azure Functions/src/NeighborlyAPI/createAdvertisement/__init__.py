@@ -1,21 +1,23 @@
 import azure.functions as func
 import pymongo
 
+
 def main(req: func.HttpRequest) -> func.HttpResponse:
 
     request = req.get_json()
 
     if request:
         try:
-            url = "localhost"  # TODO: Update with appropriate MongoDB connection information
+            # TODO: Update with appropriate MongoDB connection information
+            url = 'mongodb://neighborlycosmos:DUfTgid0ve7kaAaAoj4cDnuPYj2RoYlPNALBCEZDkCpFbNkOXRZF7ptlzKJtuIoYd2H95abeGH9RMLINrQA7cQ==@neighborlycosmos.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@neighborlycosmos@'
+
             client = pymongo.MongoClient(url)
-            database = client['azure']
+            database = client['neighborlydb']
             collection = database['advertisements']
 
             rec_id1 = collection.insert_one(eval(request))
 
             return func.HttpResponse(req.get_body())
-
         except ValueError:
             print("could not connect to mongodb")
             return func.HttpResponse('Could not connect to mongodb', status_code=500)
