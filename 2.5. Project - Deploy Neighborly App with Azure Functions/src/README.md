@@ -76,6 +76,7 @@ We need to set up the Azure resource group, region, storage account, and an app 
 6. Print out your connection string or get it from the Azure Portal. Copy/paste the **primary connection** string.  You will use it later in your application.
 
     Example connection string output:
+    
     ```bash
     bash-3.2$ Listing connection strings from COSMOS_ACCOUNT:
     + az cosmosdb keys list -n neighborlycosmos -g neighborlyapp --type connection-strings
@@ -162,6 +163,7 @@ We need to set up the Azure resource group, region, storage account, and an app 
         The result may give you a live url in this format, or you can check in Azure portal for these as well:
 
         Expected output if deployed successfully:
+        
         ```bash
         Functions in <APP_NAME>:
             createAdvertisement - [httpTrigger]
@@ -206,6 +208,7 @@ We need to set up the Azure resource group, region, storage account, and an app 
 We are going to update the Client-side `settings.py` with published API endpoints. First navigate to the `settings.py` file in the NeighborlyFrontEnd/ directory.
 
 Use a text editor to update the API_URL to your published url from the last step.
+
 ```bash
 # Inside file settings.py
 
@@ -217,15 +220,34 @@ Use a text editor to update the API_URL to your published url from the last step
 API_URL="https://<APP_NAME>.azurewebsites.net/api"
 ```
 
+Start the client app locally
+
+- Change to `NeighborlyFrontEnd` folder
+- Install dependencies with `pipenv install`
+- Go into the pip env shell with `pipenv shell`
+- Execute `python app.py`
+- Navigate to `http://localhost:5000/`
+
 ### III. CI/CD Deployment
 
 1. Deploy your client app. **Note:** Use a **different** app name here to deploy the front-end, or else you will erase your API. From within the `NeighborlyFrontEnd` directory:
-    - Install dependencies with `pipenv install`
-    - Go into the pip env shell with `pipenv shell`
+    
     - Deploy your application to the app service. **Note:** It may take a minute or two for the front-end to get up and running if you visit the related URL.
 
     Make sure to also provide any necessary information in `settings.py` to move from localhost to your deployment.
 
+    ```bash
+    az webapp up \
+        --location westus \
+        --resource-group test \
+        --plan neighborlyclient \
+        --name neighborlyclient \
+        --os-type Linux \
+        --sku FREE
+    ```
+
+    - Get the app URL and navigate to it `https://neighborlyclient.azurewebsites.net/`
+  
 2. Create an Azure Registry and dockerize your Azure Functions. Then, push the container to the Azure Container Registry.
 3. Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
 4. Deploy app to Kubernetes, and check your deployment with `kubectl config get-contexts`.

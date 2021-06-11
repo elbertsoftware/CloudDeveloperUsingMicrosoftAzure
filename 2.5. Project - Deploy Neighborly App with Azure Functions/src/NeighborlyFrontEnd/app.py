@@ -8,11 +8,10 @@ import json
 from feedgen.feed import FeedGenerator
 from flask import make_response
 from urllib.parse import urljoin
-from werkzeug.contrib.atom import AtomFeed
+#from werkzeug.contrib.atom import AtomFeed
 
 app = Flask(__name__)
 Bootstrap(app)
-
 
 
 def get_abs_url(url):
@@ -22,8 +21,7 @@ def get_abs_url(url):
 
 @app.route('/feeds/')
 def feeds():
-    feed = AtomFeed(title='All Advertisements feed',
-                    feed_url=request.url, url=request.url_root)
+    #feed = AtomFeed(title='All Advertisements feed', feed_url=request.url, url=request.url_root)
 
     response = requests.get(settings.API_URL + '/getAdvertisements')
     posts = response.json()
@@ -46,13 +44,12 @@ def rss():
     fg = FeedGenerator()
     fg.title('Feed title')
     fg.description('Feed Description')
-    fg.link(href='https://neighborly-client-v1.azurewebsites.net/')
-    
+    fg.link(href='https://neighborlyclient.azurewebsites.net/')
 
     response = requests.get(settings.API_URL + '/getAdvertisements')
     ads = response.json()
 
-    for a in ads: 
+    for a in ads:
         fe = fg.add_entry()
         fe.title(a.title)
         fe.description(a.description)
@@ -60,6 +57,7 @@ def rss():
     response = make_response(fg.rss_str())
     response.headers.set('Content-Type', 'application/rss+xml')
     return response
+
 
 @app.route('/')
 def home():
@@ -89,11 +87,13 @@ def delete_ad_view(id):
     ad = response.json()
     return render_template("delete_ad.html", ad=ad)
 
+
 @app.route('/ad/view/<id>', methods=['GET'])
 def view_ad_view(id):
     response = requests.get(settings.API_URL + '/getAdvertisement?id=' + id)
     ad = response.json()
     return render_template("view_ad.html", ad=ad)
+
 
 @app.route('/ad/new', methods=['POST'])
 def add_ad_request():
@@ -106,8 +106,10 @@ def add_ad_request():
         'imgUrl': request.form['imgUrl'],
         'price': request.form['price']
     }
-    response = requests.post(settings.API_URL + '/createAdvertisement', json=json.dumps(req_data))
+    response = requests.post(settings.API_URL + '/createAdvertisement',
+                             json=json.dumps(req_data))
     return redirect(url_for('home'))
+
 
 @app.route('/ad/update/<id>', methods=['POST'])
 def update_ad_request(id):
@@ -120,19 +122,27 @@ def update_ad_request(id):
         'imgUrl': request.form['imgUrl'],
         'price': request.form['price']
     }
-    response = requests.put(settings.API_URL + '/updateAdvertisement?id=' + id, json=json.dumps(req_data))
+    response = requests.put(settings.API_URL + '/updateAdvertisement?id=' + id,
+                            json=json.dumps(req_data))
     return redirect(url_for('home'))
+
 
 @app.route('/ad/delete/<id>', methods=['POST'])
 def delete_ad_request(id):
-    response = requests.delete(settings.API_URL + '/deleteAdvertisement?id=' + id)
+    response = requests.delete(settings.API_URL + '/deleteAdvertisement?id=' +
+                               id)
     if response.status_code == 200:
         return redirect(url_for('home'))
 
+
 # running app
+
+
 def main():
     print(' ----->>>> Flask Python Application running in development server')
-    app.run(host=settings.SERVER_HOST, port=settings.SERVER_PORT, debug=settings.FLASK_DEBUG)
+    app.run(host=settings.SERVER_HOST,
+            port=settings.SERVER_PORT,
+            debug=settings.FLASK_DEBUG)
 
 
 if __name__ == '__main__':
