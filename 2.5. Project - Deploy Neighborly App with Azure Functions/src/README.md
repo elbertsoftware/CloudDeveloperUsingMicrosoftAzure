@@ -403,8 +403,13 @@ Start the client app locally
 ### IV. Event Hubs and Logic App
 
 1. Create a Logic App that watches for an HTTP trigger. When the HTTP request is triggered, send yourself an email notification.
-2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL.
-3. Add the connection string of the event hub to the Azure Function.
+2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL
+   
+   [How to create event hubs](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create)
+   
+3. Add the connection string of the event hub to the Azure Function
+
+   [Get an Event Hubs connection string](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string)
 
 ### V.  Cleaning Up Your Services
 
