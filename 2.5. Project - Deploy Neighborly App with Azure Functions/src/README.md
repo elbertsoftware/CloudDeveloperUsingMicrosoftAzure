@@ -212,12 +212,16 @@ Use a text editor to update the API_URL to your published url from the last step
 ```bash
 # Inside file settings.py
 
-# ------- For Local Testing -------
-#API_URL = "http://localhost:7071/api"
+# ------- Local Testing -------
+# for local host if Azure functions served locally
+# API_URL = "http://localhost:7071/api"
 
-# ------- For production -------
-# where APP_NAME is your Azure Function App name 
-API_URL="https://<APP_NAME>.azurewebsites.net/api"
+# ------- Production -------
+# for serverless function app deployment
+# API_URL = "https://neighborlyapp.azurewebsites.net/api"
+
+# for Azure Kubernetes Service deployment
+API_URL = "http://137.135.15.55/api"
 ```
 
 Start the client app locally
@@ -248,9 +252,153 @@ Start the client app locally
 
     - Get the app URL and navigate to it `https://neighborlyclient.azurewebsites.net/`
   
-2. Create an Azure Registry and dockerize your Azure Functions. Then, push the container to the Azure Container Registry.
-3. Create a Kubernetes cluster, and verify your connection to it with `kubectl get nodes`.
+2. Create an Azure `Container Registry` called `ebsrepo` in Azure Portal and dockerize your Azure Functions. Then, push the container to the Azure Container Registry:
+   
+   - Create Dockerfile:
+    
+     ```bash
+     cd NeighborlyAPI
+     func init --docker-only
+     ```
+   
+   - Verify `docker` CLI installed:
+  
+     ```bash
+     docker version
+     ```
+
+   - Build docker image for the NeighborlyAPI function app:
+
+     ```bash
+     docker image build --tag neighborlyapi .
+     ```
+   
+   - Test the image locally:
+
+     ```bash
+     docker run -p 8080:80 -it neighborlyapi
+     ```
+     
+   - Create new registry if not done via Azure portal:
+
+     ```bash
+     az acr create --resource-group test --name ebsrepo --sku Basic
+     ```
+
+   - Log into the registry and make sure the registry is available:
+     
+     ```bash
+     az acr login --name ebsrepo
+     az acr show --name ebsrepo --query loginServer --output table
+     ```
+
+   - Tag the container to the newly created registry:
+     
+     ```bash
+     docker image tag neighborlyapi ebsrepo.azurecr.io/neighborlyapi
+     ```
+
+   - Push the image to the registry:
+  
+     ```bash
+     docker push ebsrepo.azurecr.io/neighborlyapi
+     ```
+
+   - Check if the docker image is up in the cloud.:
+  
+     ```bash
+     az acr repository list --name ebsrepo --output table
+     ```
+
+3. Create a Kubernetes cluster aka. `AKS - Azure Kubernates Service` called `neighborlycluster` in Azure Portal, and verify your connection to it with `kubectl get nodes`:
+   
+   - Verify `kubectl` CLI installed:
+  
+     ```bash
+     kubectl version
+     ```
+
+   - Create a Kubernetes cluster on Azure if not done via Azure portal:
+
+     ```bash
+     az aks create \
+        --resource-group test \
+        --name ebsrepo \
+        --node-count 1 \
+        --enable-addons monitoring \
+        --generate-ssh-keys
+     ```
+   
+   - Get your credentials for AKS:
+
+     ```bash
+     az aks get-credentials --name neighborlycluster --resource-group test
+     ```
+
+   - Verify the connection to your cluster with the command:
+     ```bash
+     kubectl get nodes
+     ```
+
 4. Deploy app to Kubernetes, and check your deployment with `kubectl config get-contexts`.
+
+   - KEDA is Google's opensource tool for Kubernetes event-driven Autoscaling. Let's set up the KEDA namespace for our Kubernetes cluster:
+
+     ```bash
+     func kubernetes install --namespace keda
+     ```
+     
+   - Deploy the function app to container registry (optional):
+     
+     ```bash
+     func deploy \
+        --platform kubernetes \
+        --name neighborlyapi \
+        --registry ebsrepo
+     ```
+
+   - Dry-run the deployment of the function app in order to review deploy.yml:    
+  
+     ```bash
+     func kubernetes deploy --name neighborlycluster --image-name ebsrepo.azurecr.io/neighborlyapi --dry-run > deploy.yml
+     ```
+   
+   - Deploy the function app to Kubernetes cluster:
+  
+     ```bash
+     func kubernetes deploy --name neighborlycluster --image-name ebsrepo.azurecr.io/neighborlyapi -—polling-interval 3 —-cooldown-period 5
+
+     createAdvertisement - [httpTrigger]
+        Invoke url: http://137.135.15.55/api/createadvertisement
+
+     deleteAdvertisement - [httpTrigger]
+        Invoke url: http://137.135.15.55/api/deleteadvertisement
+
+     getAdvertisement - [httpTrigger]
+        Invoke url: http://137.135.15.55/api/getadvertisement
+
+     getAdvertisements - [httpTrigger]
+        Invoke url: http://137.135.15.55/api/getadvertisements
+
+     getPost - [httpTrigger]
+        Invoke url: http://137.135.15.55/api/getpost
+
+     getPosts - [httpTrigger]
+        Invoke url: http://137.135.15.55/api/getposts
+
+     updateAdvertisement - [httpTrigger]
+        Invoke url: http://137.135.15.55/api/updateadvertisement
+
+     Master key: kq/PBQNYmpO1gNGd4pieCdB44cX9WTXBHbUGO4EYNEGDO9D4UeVULg==
+     ```
+
+   - Verify the deployment:
+
+     ```bash
+     kubectl get service --watch
+
+     kubectl config get-contexts
+     ```
 
 ### IV. Event Hubs and Logic App
 
@@ -269,4 +417,8 @@ Clean up and remove all services, or else you will incur charges.
 RESOURCE_GROUP="<YOUR-RESOURCE-GROUP>"
 # run this command
 az group delete --name $RESOURCE_GROUP
+
+kubectl delete deploy <name-of-function-deployment>
+kubectl delete ScaledObject <name-of-function-deployment>
+kubectl delete secret <name-of-function-deployment>
 ```

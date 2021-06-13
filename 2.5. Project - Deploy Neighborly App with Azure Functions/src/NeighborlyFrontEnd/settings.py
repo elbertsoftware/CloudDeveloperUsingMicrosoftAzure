@@ -12,8 +12,11 @@ API_VERSION = 'v1'
 
 # -------- Azure constants
 
-# API_URL format: "https://[FUNCTION_APP_NAME_GOES_HERE].azurewebsites.net"
-API_URL = "https://neighborlyapp.azurewebsites.net/api"
-
 # for local host if Azure functions served locally
 # API_URL = "http://localhost:7071/api"
+
+# for serverless function app deployment
+# API_URL = "https://neighborlyapp.azurewebsites.net/api"
+
+# for Azure Kubernetes Service deployment
+API_URL = "http://137.135.15.55/api"
