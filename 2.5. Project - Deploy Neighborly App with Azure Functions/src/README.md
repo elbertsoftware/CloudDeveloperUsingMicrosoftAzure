@@ -10,7 +10,7 @@ The application makes direct requests to the back-end API endpoints. These are e
 
 You can see an example of the deployed app below.
 
-![Deployed App](images/final-app.png)
+![Deployed App](../images/final-app.png)
 
 ## Dependencies
 
