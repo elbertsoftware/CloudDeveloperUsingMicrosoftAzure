@@ -1,0 +1,89 @@
+1:22:06 PM neighborlyapp: Starting deployment...
+1:22:08 PM neighborlyapp: Creating zip package...
+1:22:08 PM neighborlyapp: Zip package size: 12.8 kB
+1:22:08 PM neighborlyapp: Fetching changes.
+1:22:09 PM neighborlyapp: Cleaning up temp folders from previous zip deployments and extracting pushed zip file /tmp/zipdeploy/8a2cacb7-1cc6-4aa4-9e25-23896735cd8e.zip (0.01 MB) to /tmp/zipdeploy/extracted
+1:22:11 PM neighborlyapp: Updating submodules.
+1:22:12 PM neighborlyapp: Preparing deployment for commit id '3cc188a7cc'.
+1:22:12 PM neighborlyapp: Repository path is /tmp/zipdeploy/extracted
+1:22:12 PM neighborlyapp: Running oryx build...
+1:22:12 PM neighborlyapp: Command: oryx build /tmp/zipdeploy/extracted -o /home/site/wwwroot --platform python --platform-version 3.8 -p packagedir=.python_packages/lib/site-packages
+1:22:13 PM neighborlyapp: Operation performed by Microsoft Oryx, https://github.com/Microsoft/Oryx
+1:22:13 PM neighborlyapp: You can report issues at https://github.com/Microsoft/Oryx/issues
+1:22:13 PM neighborlyapp: Oryx Version: 0.2.20201015.1, Commit: 1a35fbce482b20b71290f3a837a3469803ce4b44, ReleaseTagName: 20201015.1
+1:22:13 PM neighborlyapp: Build Operation ID: |R6gYId24erU=.fb13c3e9_
+1:22:13 PM neighborlyapp: Repository Commit : 3cc188a7ccfd4f7c94bd390272b4c8f8
+1:22:13 PM neighborlyapp: Detecting platforms...
+1:22:14 PM neighborlyapp: Detected following platforms:
+1:22:14 PM neighborlyapp:   python: 3.8.6
+1:22:14 PM neighborlyapp: Version '3.8.6' of platform 'python' is not installed. Generating script to install it...
+1:22:15 PM neighborlyapp: Source directory     : /tmp/zipdeploy/extracted
+1:22:15 PM neighborlyapp: Destination directory: /home/site/wwwroot
+1:22:15 PM neighborlyapp: Downloading and extracting 'python' version '3.8.6' to '/tmp/oryx/platforms/python/3.8.6'...
+1:22:16 PM neighborlyapp: Downloaded in 2 sec(s).
+1:22:16 PM neighborlyapp: Verifying checksum...
+1:22:16 PM neighborlyapp: Extracting contents...
+1:22:19 PM neighborlyapp: Done in 5 sec(s).
+1:22:19 PM neighborlyapp: Python Version: /tmp/oryx/platforms/python/3.8.6/bin/python3.8
+1:22:19 PM neighborlyapp: Running pip install...
+1:22:20 PM neighborlyapp: [20:22:20+0000] Collecting azure-functions==1.2.1
+1:22:20 PM neighborlyapp: [20:22:20+0000]   Downloading azure_functions-1.2.1-py3-none-any.whl (114 kB)
+1:22:21 PM neighborlyapp: [20:22:21+0000] Collecting pymongo==3.10.1
+1:22:21 PM neighborlyapp: [20:22:21+0000]   Downloading pymongo-3.10.1-cp38-cp38-manylinux2014_x86_64.whl (480 kB)
+1:22:21 PM neighborlyapp: [20:22:21+0000] Installing collected packages: azure-functions, pymongo
+1:22:22 PM neighborlyapp: [20:22:22+0000] Successfully installed azure-functions-1.2.1 pymongo-3.10.1
+1:22:22 PM neighborlyapp: WARNING: You are using pip version 20.2.3; however, version 21.1.2 is available.
+1:22:22 PM neighborlyapp: You should consider upgrading via the '/tmp/oryx/platforms/python/3.8.6/bin/python3.8 -m pip install --upgrade pip' command.
+1:22:22 PM neighborlyapp: Done in 3 sec(s).
+1:22:22 PM neighborlyapp: Copying files to destination directory '/home/site/wwwroot'...
+1:22:22 PM neighborlyapp: Done in 0 sec(s).
+1:22:22 PM neighborlyapp: Removing existing manifest file
+1:22:22 PM neighborlyapp: Creating a manifest file...
+1:22:22 PM neighborlyapp: Manifest file created.
+1:22:22 PM neighborlyapp: Done in 8 sec(s).
+1:22:24 PM neighborlyapp: Running post deployment command(s)...
+1:22:24 PM neighborlyapp: Triggering recycle (preview mode disabled).
+1:22:24 PM neighborlyapp: Linux Consumption plan has a 1.5 GB memory limit on a remote build container.
+1:22:24 PM neighborlyapp: To check our service limit, please visit https://docs.microsoft.com/en-us/azure/azure-functions/functions-scale#service-limits
+1:22:24 PM neighborlyapp: Creating placeholder blob for linux consumption function app...
+1:22:24 PM neighborlyapp: SCM_RUN_FROM_PACKAGE placeholder blob scm-latest-neighborlyapp.zip located
+1:22:24 PM neighborlyapp: Writing the artifacts to a squashfs file
+1:22:24 PM neighborlyapp: Parallel mksquashfs: Using 1 processor
+1:22:24 PM neighborlyapp: Creating 4.0 filesystem on /home/site/artifacts/functionappartifact.squashfs, block size 131072.
+1:22:25 PM neighborlyapp: [===============================================================/] 260/260 100%
+1:22:25 PM neighborlyapp: Exportable Squashfs 4.0 filesystem, gzip compressed, data block size 131072
+1:22:25 PM neighborlyapp: 	compressed data, compressed metadata, compressed fragments, compressed xattrs
+1:22:25 PM neighborlyapp: 	duplicates are removed
+1:22:25 PM neighborlyapp: Filesystem size 985.92 Kbytes (0.96 Mbytes)
+1:22:25 PM neighborlyapp: 	28.81% of uncompressed filesystem size (3422.61 Kbytes)
+1:22:25 PM neighborlyapp: Inode table size 2649 bytes (2.59 Kbytes)
+1:22:25 PM neighborlyapp: 	28.74% of uncompressed inode table size (9216 bytes)
+1:22:25 PM neighborlyapp: Directory table size 2887 bytes (2.82 Kbytes)
+1:22:25 PM neighborlyapp: 	38.83% of uncompressed directory table size (7435 bytes)
+1:22:26 PM neighborlyapp: Number of duplicate files found 9
+1:22:26 PM neighborlyapp: Number of inodes 287
+1:22:26 PM neighborlyapp: Number of files 259
+1:22:26 PM neighborlyapp: Number of fragments 27
+1:22:26 PM neighborlyapp: Number of symbolic links  0
+1:22:26 PM neighborlyapp: Number of device nodes 0
+1:22:26 PM neighborlyapp: Number of fifo nodes 0
+1:22:26 PM neighborlyapp: Number of socket nodes 0
+1:22:26 PM neighborlyapp: Number of directories 28
+1:22:26 PM neighborlyapp: Number of ids (unique uids + gids) 1
+1:22:26 PM neighborlyapp: Number of uids 1
+1:22:26 PM neighborlyapp: 	root (0)
+1:22:26 PM neighborlyapp: Number of gids 1
+1:22:26 PM neighborlyapp: 	root (0)
+1:22:26 PM neighborlyapp: Uploading built content /home/site/artifacts/functionappartifact.squashfs for linux consumption function app...
+1:22:26 PM neighborlyapp: Resetting all workers for neighborlyapp.azurewebsites.net
+1:22:26 PM neighborlyapp: Deployment successful.
+1:22:43 PM neighborlyapp: Syncing triggers...
+1:22:45 PM neighborlyapp: Querying triggers...
+1:22:49 PM neighborlyapp: HTTP Trigger Urls:
+  createAdvertisement: https://neighborlyapp.azurewebsites.net/api/createadvertisement
+  deleteAdvertisement: https://neighborlyapp.azurewebsites.net/api/deleteadvertisement
+  getAdvertisement: https://neighborlyapp.azurewebsites.net/api/getadvertisement
+  getAdvertisements: https://neighborlyapp.azurewebsites.net/api/getadvertisements
+  getPost: https://neighborlyapp.azurewebsites.net/api/getpost
+  getPosts: https://neighborlyapp.azurewebsites.net/api/getposts
+  updateAdvertisement: https://neighborlyapp.azurewebsites.net/api/updateadvertisement
