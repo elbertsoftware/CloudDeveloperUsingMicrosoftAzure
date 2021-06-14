@@ -1,0 +1,159 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Azure Dev",
+		"_postman_id": "663dffcb-50a1-5f0f-5d7c-e04a869d078c",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "eventGridTrigger",
+			"request": {
+				"url": "https://kptopic.westus-1.eventgrid.azure.net/api/events",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "aeg-sas-key",
+						"value": "GP7Pt09BRYIOckCBF3hTXtyTZRxMUTRSpjgxsNOrNxQ=",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{   \n\t\"id\": \"01\",   \n  \t\"eventType\": \"recordInserted\",   \n  \t\"subject\": \"myapp/notes/1\",   \n  \t\"eventTime\": \"2020-08-10T21:03:07+00:00\",   \n  \t\"data\": {     \n    \t\"title\":\"testing title\",     \n        \"description\": \"testing description here\"   \n    },  \n   \t\"dataVersion\": \"1.0\",   \n   \t\"metadataVersion\": \"1\",   \n   \t\"topic\": \"/subscriptions/b5871718-8318-4393-a54a-0b866c2ff9ac/resourceGroups/test/providers/Microsoft.EventGrid/topics/kptopic\" \n}]"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:7071/api/getadvertisements",
+			"request": {
+				"url": "http://localhost:7071/api/getadvertisements",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:7071/api/getposts",
+			"request": {
+				"url": "http://localhost:7071/api/getposts",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "https://neighborlyapp.azurewebsites.net/api/getadvertisements",
+			"request": {
+				"url": "https://neighborlyapp.azurewebsites.net/api/getadvertisements",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "https://neighborlyapp.azurewebsites.net/api/getposts",
+			"request": {
+				"url": "https://neighborlyapp.azurewebsites.net/api/getposts",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getadvertisements (AKS)",
+			"request": {
+				"url": "http://137.135.15.55/api/getadvertisements",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getposts (AKS)",
+			"request": {
+				"url": "http://137.135.15.55/api/getposts",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Logic App Send Email by HTTP Request",
+			"request": {
+				"url": "https://prod-178.westus.logic.azure.com:443/workflows/ead4b6e52f3f4c23bb540a34e3b25488/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ju2n_pDjUh1AXR-4H5JAo9jGO1cKYc3fAjI_HjFkbA0",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Event Grid with App Function",
+			"request": {
+				"url": "https://appfunctiontopic.westus-1.eventgrid.azure.net/api/events",
+				"method": "POST",
+				"header": [
+					{
+						"key": "aeg-sas-key",
+						"value": "39+bXibfxXshvbDfu5QrAJoU2dEcJKeLrkSeR4XgSfk=",
+						"description": ""
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n {\n     \"id\": \"4\",\n     \"eventType\": \"appfunction\",\n     \"subject\": \"appfunction/event\",\n     \"eventTime\": \"2021-06-13T04:04:04+00:00\",\n     \"data\": {\n         \"name\": \"Kenneth Pham\"\n     },\n     \"dataVersion\": \"1.0\",\n     \"metadataVersion\": \"1\",\n     \"topic\": \"/subscriptions/b5871718-8318-4393-a54a-0b866c2ff9ac/resourceGroups/test/providers/Microsoft.EventGrid/topics/appfunctiontopic\"\n }\n]"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

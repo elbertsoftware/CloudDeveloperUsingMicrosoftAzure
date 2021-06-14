@@ -59,15 +59,9 @@ We need to set up the Azure resource group, region, storage account, and an app 
 
 2. Create a storage account (within the previously created resource group and region) - `neighborlystorage`
 
-3. Create an Azure Function App within the resource group, region and storage account. 
+3. Create an Azure Function App - `neighborlyapp` - within the resource group, region and storage account. 
    - Note that app names need to be unique across all of Azure.
    - Make sure it is a Linux app, with a Python runtime.
-
-    Example of successful output, if creating the app `neighborlyapp`:
-
-    ```bash
-    Your Linux function app 'myneighborlyapi', that uses a consumption plan has been successfully created but is not active until content is published using Azure Portal or the Functions Core Tools.
-    ```
 
 4. Set up a Cosmos DB Account - `neighborlycosmos`. You will need to use the same resource group, region and storage account, but can name the Cosmos DB account as you prefer. **Note:** This step may take a little while to complete (15-20 minutes in some cases).
 
@@ -75,24 +69,30 @@ We need to set up the Azure resource group, region, storage account, and an app 
 
 6. Print out your connection string or get it from the Azure Portal. Copy/paste the **primary connection** string.  You will use it later in your application.
 
-    Example connection string output:
+   Example connection string output:
     
     ```bash
-    bash-3.2$ Listing connection strings from COSMOS_ACCOUNT:
-    + az cosmosdb keys list -n neighborlycosmos -g neighborlyapp --type connection-strings
+    az cosmosdb keys list -n neighborlycosmos -g neighborlyapp --type connection-strings
+    
     {
-    "connectionStrings": [
+      "connectionStrings": [
         {
-        "connectionString": "AccountEndpoint=https://neighborlycosmos.documents.azure.com:443/;AccountKey=xxxxxxxxxxxx;",
-        "description": "Primary SQL Connection String"
+          "connectionString": "mongodb://neighborlycosmos:DUfTgid0ve7kaAaAoj4cDnuPYj2RoYlPNALBCEZDkCpFbNkOXRZF7ptlzKJtuIoYd2H95abeGH9RMLINrQA7cQ==@neighborlycosmos.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@neighborlycosmos@",
+          "description": "Primary MongoDB Connection String"
         },
         {
-        "connectionString": "AccountEndpoint=https://neighborlycosmos.documents.azure.com:443/;AccountKey=xxxxxxxxxxxxx;",
-        "description": "Secondary SQL Connection String"
-        } 
-        
-        ... [other code omitted]
-    ]
+          "connectionString": "mongodb://neighborlycosmos:BBcHCoAEDWKc2z57AvsuYqzE2coOXuaUKSvann0jVTAOBmbJPYcg7TuTm995H8UZVMlY7xRGR4QqyT2vmoVDow==@neighborlycosmos.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@neighborlycosmos@",
+          "description": "Secondary MongoDB Connection String"
+        },
+        {
+          "connectionString": "mongodb://neighborlycosmos:19zZ1JRfhTxWBkPHbwT6ftjV1HrKpdlX1Dr5rbHCqKker0zDHt2lor96mUjxYxb3FFCwldZZ2rWQ9a4ZQDHJYQ==@neighborlycosmos.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@neighborlycosmos@",
+          "description": "Primary Read-Only MongoDB Connection String"
+        },
+        {
+          "connectionString": "mongodb://neighborlycosmos:EabcG8ctMqn750pernU4FUHgE1BIFLkFf4m7tNP7Sk7oltTS1vFgykN8nAk64VXCyN6hc5KgUm1A9gLmYT5rGw==@neighborlycosmos.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@neighborlycosmos@",
+          "description": "Secondary Read-Only MongoDB Connection String"
+        }
+      ]
     }
     ```
 
@@ -151,57 +151,27 @@ We need to set up the Azure resource group, region, storage account, and an app 
         At this point, Azure functions are hosted in localhost:7071.  You can use the browser or Postman to see if the GET request works.  For example, go to the browser and type in: 
 
         ```bash
-        # example endpoint for all advertisements
+        # endpoint for all advertisements
         http://localhost:7071/api/getadvertisements
 
-        #example endpoint for all posts
+        # endpoint for all posts
         http://localhost:7071/api/getposts
         ```
 
-    2. Now you can deploy functions to Azure by publishing your function app.
+    2. Now you can deploy functions to Azure by publishing your function app directly from Visual Studio Code Azure extention:
 
-        The result may give you a live url in this format, or you can check in Azure portal for these as well:
 
-        Expected output if deployed successfully:
-        
-        ```bash
-        Functions in <APP_NAME>:
-            createAdvertisement - [httpTrigger]
-                Invoke url: https://<APP_NAME>.azurewebsites.net/api/createadvertisement
+       Expected output if deployed successfully with live URLs:
 
-            deleteAdvertisement - [httpTrigger]
-                Invoke url: https://<APP_NAME>.azurewebsites.net/api/deleteadvertisement
-
-            getAdvertisement - [httpTrigger]
-                Invoke url: https://<APP_NAME>.azurewebsites.net/api/getadvertisement
-
-            getAdvertisements - [httpTrigger]
-                Invoke url: https://<APP_NAME>.azurewebsites.net/api/getadvertisements
-
-            getPost - [httpTrigger]
-                Invoke url: https://<APP_NAME>.azurewebsites.net/api/getpost
-
-            getPosts - [httpTrigger]
-                Invoke url: https://<APP_NAME>.azurewebsites.net/api/getposts
-
-            updateAdvertisement - [httpTrigger]
-                Invoke url: https://<APP_NAME>.azurewebsites.net/api/updateadvertisement
-
-        ```
-
-        **Note:** It may take a minute or two for the endpoints to get up and running if you visit the URLs.
-
-        Save the function app url **https://<APP_NAME>.azurewebsites.net/api/** since you will need to update that in the client-side of the application:
-
-        ```bash
-        createAdvertisement: https://neighborlyapp.azurewebsites.net/api/createadvertisement
-        deleteAdvertisement: https://neighborlyapp.azurewebsites.net/api/deleteadvertisement
-        getAdvertisement: https://neighborlyapp.azurewebsites.net/api/getadvertisement
-        getAdvertisements: https://neighborlyapp.azurewebsites.net/api/getadvertisements
-        getPost: https://neighborlyapp.azurewebsites.net/api/getpost
-        getPosts: https://neighborlyapp.azurewebsites.net/api/getposts
-        updateAdvertisement: https://neighborlyapp.azurewebsites.net/api/updateadvertisemen
-        ```
+       ```bash
+       createAdvertisement: https://neighborlyapp.azurewebsites.net/api/createadvertisement
+       deleteAdvertisement: https://neighborlyapp.azurewebsites.net/api/deleteadvertisement
+       getAdvertisement: https://neighborlyapp.azurewebsites.net/api/getadvertisement
+       getAdvertisements: https://neighborlyapp.azurewebsites.net/api/getadvertisements
+       getPost: https://neighborlyapp.azurewebsites.net/api/getpost
+       getPosts: https://neighborlyapp.azurewebsites.net/api/getposts
+       updateAdvertisement: https://neighborlyapp.azurewebsites.net/api/updateadvertisemen
+       ```
 
 ### II. Deploying the client-side Flask web application
 
@@ -238,17 +208,17 @@ Start the client app locally
     
     - Deploy your application to the app service. **Note:** It may take a minute or two for the front-end to get up and running if you visit the related URL.
 
-    Make sure to also provide any necessary information in `settings.py` to move from localhost to your deployment.
+      Make sure to also provide any necessary information in `settings.py` to move from localhost to your deployment.
 
-    ```bash
-    az webapp up \
+      ```bash
+      az webapp up \
         --location westus \
         --resource-group test \
         --plan neighborlyclient \
         --name neighborlyclient \
         --os-type Linux \
         --sku FREE
-    ```
+      ```
 
     - Get the app URL and navigate to it `https://neighborlyclient.azurewebsites.net/`
   
@@ -402,7 +372,10 @@ Start the client app locally
 
 ### IV. Event Hubs and Logic App
 
-1. Create a Logic App that watches for an HTTP trigger. When the HTTP request is triggered, send yourself an email notification.
+1. Create a Logic App that watches for an HTTP trigger. When the HTTP request is triggered, send yourself an email notification
+   
+   ![Logic App Send Email on HTTPP trigger](./../screenshots/07.%20Logic%20App%20Send%20Email%20by%20HTTP%20Request.png)
+
 2. Create a namespace for event hub in the portal. You should be able to obtain the namespace URL
    
    [How to create event hubs](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create)
@@ -419,11 +392,8 @@ Clean up and remove all services, or else you will incur charges.
 
 ```bash
 # replace with your resource group
-RESOURCE_GROUP="<YOUR-RESOURCE-GROUP>"
+RESOURCE_GROUP="test"
+
 # run this command
 az group delete --name $RESOURCE_GROUP
-
-kubectl delete deploy <name-of-function-deployment>
-kubectl delete ScaledObject <name-of-function-deployment>
-kubectl delete secret <name-of-function-deployment>
 ```
