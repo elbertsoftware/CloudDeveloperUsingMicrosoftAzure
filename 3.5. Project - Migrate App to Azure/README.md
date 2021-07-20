@@ -25,34 +25,60 @@ You will need to install the following locally:
 ## Project Instructions
 
 ### Part 1: Create Azure Resources and Deploy Web App
-1. Create a Resource group
-2. Create an Azure Postgres Database single server
-   - Add a new database `techconfdb`
-   - Allow all IPs to connect to database server
-   - Restore the database with the backup located in the data folder
-3. Create a Service Bus resource with a `notificationqueue` that will be used to communicate between the web and the function
-   - Open the web folder and update the following in the `config.py` file
-      - `POSTGRES_URL`
-      - `POSTGRES_USER`
-      - `POSTGRES_PW`
-      - `POSTGRES_DB`
-      - `SERVICE_BUS_CONNECTION_STRING`
-4. Create App Service plan
-5. Create a storage account
-6. Deploy the web app
+1. Create a Resource group `techconf`
+2. Create an Azure Postgres Database:
+   - Use Azure Portal to create new single server `techconfdbserver`:
+     ![alt text](./screenshots/01.%20Postgres%20Server.png)
+
+   - Allow all IPs to connect to database server:
+     ![alt text](./screenshots/02.%20Allow%20All%20IPss.png)
+
+   - [Add a new database](https://docs.microsoft.com/en-us/azure/postgresql/quickstart-create-server-database-portal) `techconfdb` using `pgAdmin4`:
+     ``` bash
+     host: techconfdbserver.postgres.database.azure.com
+     port: 5432
+     database name: postgres
+     username: dbadmin@techconfdbserver
+     ```
+     ![alt text](./screenshots/03.%20pgAdmin4%20-%20Connect%20to%20Azure%20DB.png)
+     ![alt text](./screenshots/04.%20pgAdmin4%20-%20Create%20Database.png)
+
+   - Restore the database with the backup located in the data folder using `pgAdmin4`:
+     ![alt text](./screenshots/05.%20pgAdmin4%20-%20Restore.png)
+
+3. Create a Service Bus resource `techconfservicebus` with a `notificationqueue` that will be used to communicate between the web and the function:
+   ![alt text](./screenshots/06.%20Notification%20Service%20Bus%20&%20Queue.png)
+
+4. Open the web folder and update the following in the `config.py` file
+   - `POSTGRES_URL`
+   - `POSTGRES_USER`
+   - `POSTGRES_PW`
+   - `POSTGRES_DB`
+   - `SERVICE_BUS_CONNECTION_STRING`
+  
+5. Create App Service plan `techconfappservice`:
+   ![alt text](./screenshots/07.%20App%20Service%20Plan.png)
+
+6. Create Azure Web App `techconfwebapp` under the App Service Plan `techconfappservice`:
+   ![alt text](./screenshots/08.%20Web%20App.png)
+
+7. Create a storage account `techconfstorageaccount`:
+   ![alt text](./screenshots/09.%20Storage.png)
+
+8. Deploy the web app:
+   - Open `web` subfolder in Visual Studio Code
+   - Select `Deploy to Web App...` 
+   - Pick `techconfwebapp` from the list
+   ![alt text](./screenshots/10.%20Atttendees%20Registration%20List.png)
+   ![alt text](./screenshots/11.%20Email%20Notification%20List.png)
 
 ### Part 2: Create and Publish Azure Function
-1. Create an Azure Function in the `function` folder that is triggered by the service bus queue created in Part 1.
-
-      **Note**: Skeleton code has been provided in the **README** file located in the `function` folder. You will need to copy/paste this code into the `__init.py__` file in the `function` folder.
-      - The Azure Function should do the following:
-         - Process the message which is the `notification_id`
-         - Query the database using `psycopg2` library for the given notification to retrieve the subject and message
-         - Query the database to retrieve a list of attendees (**email** and **first name**)
-         - Loop through each attendee and send a personalized subject message
-         - After the notification, update the notification status with the total number of attendees notified
-2. Publish the Azure Function
-
+1. Create an Azure Function `techconffuncapp` in the `function` folder
+2. Add a new function `notificationQueueTrigger` in type of `serviceBusTrigger` 
+3. Update __init__.py with required business logic
+4. Publish the Azure Function
+   ![alt text](./screenshots/12.%20Function%20App.png)
+   ![alt text](./screenshots/13.%20Service%20Bus%20Trigger.png)
 ### Part 3: Refactor `routes.py`
 1. Refactor the post logic in `web/app/routes.py -> notification()` using servicebus `queue_client`:
    - The notification method on POST should save the notification object and queue the notification id for the function to pick it up
@@ -61,11 +87,20 @@ You will need to install the following locally:
 ## Monthly Cost Analysis
 Complete a month cost analysis of each Azure resource to give an estimate total cost using the table below:
 
-| Azure Resource | Service Tier | Monthly Cost |
-| ------------ | ------------ | ------------ |
-| *Azure Postgres Database* |     |              |
-| *Azure Service Bus*   |         |              |
-| ...                   |         |              |
+| Azure Resource            | Service Tier                   | Monthly Cost |
+| ------------------------- | ------------------------------ | ------------:|
+| *Azure Postgres Database* | *Basic, Gen 5, 2 vCores, 5 GB* | *$65.08*     |
+| *Azure Service Bus*       | *Basic, 1 million messages*    | *$0.05*      |
+| *Azure App Service*       | *F1, 60 minutes/day compute*   | *$0.00*      |
+| *Azure Storage*           | *Standard, 1 GB*               | *$0.14*      |
+| *Azure Function*          | *Consumption*                  | *$0.00*      |
+|                           | Total:                         | *$65.27*      |
 
 ## Architecture Explanation
-This is a placeholder section where you can provide an explanation and reasoning for your architecture selection for both the Azure Web App and Azure Function.
+The Techconf is a simple web application which needs less than 14 GB of RAM and 4 virtual CPU so Azure App Service/Web App fits perfectly in terms of performance and cost. The selection still reserve the capability to scale out if needed in the future.
+
+Sending notifications to attendees is not required immediate process, it can be off-loaded to Azure Service Bus queue and use Service Bus Trigger of Azure Function to send emails later. This approach can help the web app perform better.
+
+The web app only needs basic RDBMS, Azure Postgres Database is the less expensive option. With the same configuration, Azure SQL Database costs $391.10 and Azure MySQL Database costs $150.19 per month.
+
+SendGrid API is the most robust I have been using for years when it comes to sending emails. It is widely integrated within Azure built-in and custom solutions.

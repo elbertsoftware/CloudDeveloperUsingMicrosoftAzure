@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
 
+
 class Attendee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     conference_id = db.Column(db.Integer, nullable=False)
@@ -18,6 +19,7 @@ class Attendee(db.Model):
     def __repr__(self):
         return "{} {}".format(self.first_name, self.last_name)
 
+
 class Conference(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
@@ -29,11 +31,12 @@ class Conference(db.Model):
     def __repr__(self):
         return "Conference: {}".format(self.name)
 
+
 class Notification(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    status =  db.Column(db.Text, nullable=False)
-    message =  db.Column(db.Text)
-    subject =  db.Column(db.Text)
+    status = db.Column(db.Text, nullable=False)
+    message = db.Column(db.Text)
+    subject = db.Column(db.Text)
     submitted_date = db.Column(db.DateTime(timezone=True))
     completed_date = db.Column(db.DateTime(timezone=True))
 
