@@ -26,7 +26,10 @@ You will need to install the following locally:
 
 ### Part 1: Create Azure Resources and Deploy Web App
 1. Create a Resource group `techconf`
-2. Create an Azure Postgres Database:
+2. Create a storage account `techconfstorageaccount`:
+   ![alt text](./screenshots/09.%20Storage.png)
+
+3. Create an Azure Postgres Database:
    - Use Azure Portal to create new single server `techconfdbserver`:
      ![alt text](./screenshots/01.%20Postgres%20Server.png)
 
@@ -46,39 +49,37 @@ You will need to install the following locally:
    - Restore the database with the backup located in the data folder using `pgAdmin4`:
      ![alt text](./screenshots/05.%20pgAdmin4%20-%20Restore.png)
 
-3. Create a Service Bus resource `techconfservicebus` with a `notificationqueue` that will be used to communicate between the web and the function:
+4. Create a Service Bus resource `techconfservicebus` with a `notificationqueue` that will be used to communicate between the web and the function:
    ![alt text](./screenshots/06.%20Notification%20Service%20Bus%20&%20Queue.png)
 
-4. Open the web folder and update the following in the `config.py` file
+5. Open the web folder and update the following in the `config.py` file
    - `POSTGRES_URL`
    - `POSTGRES_USER`
    - `POSTGRES_PW`
    - `POSTGRES_DB`
    - `SERVICE_BUS_CONNECTION_STRING`
   
-5. Create App Service plan `techconfappservice`:
+6. Create App Service plan `techconfappservice`:
    ![alt text](./screenshots/07.%20App%20Service%20Plan.png)
 
-6. Create Azure Web App `techconfwebapp` under the App Service Plan `techconfappservice`:
+7. Create Azure Web App `techconfwebapp` under the App Service Plan `techconfappservice`:
    ![alt text](./screenshots/08.%20Web%20App.png)
-
-7. Create a storage account `techconfstorageaccount`:
-   ![alt text](./screenshots/09.%20Storage.png)
 
 8. Deploy the web app:
    - Open `web` subfolder in Visual Studio Code
    - Select `Deploy to Web App...` 
    - Pick `techconfwebapp` from the list
-   ![alt text](./screenshots/10.%20Atttendees%20Registration%20List.png)
-   ![alt text](./screenshots/11.%20Email%20Notification%20List.png)
+   ![alt text](./screenshots/10.%20TechConf.png)
+   ![alt text](./screenshots/11.%20Atttendees%20Registration%20List.png)
+   ![alt text](./screenshots/12.%20Email%20Notification%20List.png)
 
 ### Part 2: Create and Publish Azure Function
 1. Create an Azure Function `techconffuncapp` in the `function` folder
 2. Add a new function `notificationQueueTrigger` in type of `serviceBusTrigger` 
 3. Update __init__.py with required business logic
 4. Publish the Azure Function
-   ![alt text](./screenshots/12.%20Function%20App.png)
-   ![alt text](./screenshots/13.%20Service%20Bus%20Trigger.png)
+   ![alt text](./screenshots/13.%20Function%20App.png)
+   ![alt text](./screenshots/14.%20Service%20Bus%20Trigger.png)
 ### Part 3: Refactor `routes.py`
 1. Refactor the post logic in `web/app/routes.py -> notification()` using servicebus `queue_client`:
    - The notification method on POST should save the notification object and queue the notification id for the function to pick it up
