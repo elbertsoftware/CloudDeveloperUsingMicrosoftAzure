@@ -1,8 +1,10 @@
-import logging
-import azure.functions as func
-import psycopg2
 import os
+import logging
 from datetime import datetime
+
+import azure.functions as func
+
+import psycopg2
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
@@ -59,7 +61,7 @@ def main(msg: func.ServiceBusMessage):
 
         # TODO: Update the notification table by setting the completed date and updating the status with the total number of attendees notified
         cursor.execute(
-            f'UPDATE notification SET status = "Notified {len(attendees)} attendees", completed_date = "{datetime.now}" WHERE id = "{notification_id}";')
+            f"UPDATE notification SET status = 'Notified {len(attendees)} attendees', completed_date = '{datetime.now}' WHERE id = {notification_id};")
         connection.commit()
         logging.info(
             '>>> Updated notification status to Postgres Database on Azure')
