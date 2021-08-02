@@ -162,22 +162,69 @@ The script above will take a few minutes to create VMSS and related resources. O
       nc -vz 52.233.72.121 50001
       nc -vz 52.233.72.121 50002
       ssh -p 50001 udacityadmin@52.233.72.121
+
+      # Recreate ssh keys if needed
+      ssh-keygen -m PEM -t rsa -b 4096
+      cat ~/.ssh/id_rsa.pub | pbcopy
+
+      # Go to Reset Password at the VMSS level and pick Reset SSH public key
+      # Provide user as udacityadmin
+      # Copy SSH public key from clipboard (stored by the above pbcopy command)
+      # Reimage any existing VMs in the VMSS      
       ```
 
 2. Once you log in to one of the VMSS instances, deploy the application manually: 
       ```bash
       # Clone locally
-      git clone https://github.com/<GITHUB_USERNAME>/nd081-c4-azure-performance-project-starter.git
-      cd nd081-c4-azure-performance-project-starter
-      # Make sure, you aer in the master branch
+      git clone https://github.com/elbertsoftware/CloudDeveloperUsingMicrosoftAzure.git
+
+      cd CloudDeveloperUsingMicrosoftAzure
+      # Make sure, you are in the master branch
+      git branch
+
       git checkout Deploy_to_VMSS
+      git pull --rebase
+      
       # Update sudo
+      sudo apt update
+
       # Install Python 3.7
+      sudo apt install python3-apt
+      
+      sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+      sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
+
+      sudo update-alternatives --config python3 # select 2
+
+      python3 --version
+
       # Install pip
+      python3 -m pip install --upgrade pip
+      pip3 --version
+
       # Install and start Redis server. Refer https://redis.io/download for help. 
+      sudo add-apt-repository ppa:redislabs/redis
+      sudo apt-get update
+      sudo apt-get install redis
+
+      redis-server
+
+      redis-cli ping  # PONG should be returned
+
+      # Clean up
+      sudo apt autoremove --purge
+      sudo apt autoclean
+
       # Clone and navigate inside the project repo. We need the Flask frontend code
       # Install dependencies - necessary Python packages - redis, opencensus, opencensus-ext-azure, opencensus-ext-flask, flask
+      cd 4.5.\ Enhancing\ Applications
+      pip3 install -r requirements.txt
+
       # Run the app
+      cd azure-vote
+      python3 main.py
+
+      # Navigate to http://52.233.72.121 from the browser
       ```
 
 3. After successful deployment and starting the application, copy the VMSS' public IP address and paste it in the browser. You will see the voting application up and running. If it still shows **502 Bad Gateway nginx/1.14.0 (Ubuntu)** message, it means either of the following:
