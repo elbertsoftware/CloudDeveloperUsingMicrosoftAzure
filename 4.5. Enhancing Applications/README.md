@@ -225,6 +225,12 @@ The script above will take a few minutes to create VMSS and related resources. O
       python3 main.py
 
       # Navigate to http://52.233.72.121 from the browser
+
+      # Go back to the Application Insights dashboard, and do the following:
+      # - Navigate to the Usage → Events service. Create a query to view the event telemetry.
+      # - Navigate to the Monitoring → Logs service. Create a chart from the query showing when 'Dogs' or 'Cats' is clicked.
+      customEvents
+      | where name contains "Cats" or name contains "Dogs";
       ```
 
 3. After successful deployment and starting the application, copy the VMSS' public IP address and paste it in the browser. You will see the voting application up and running. If it still shows **502 Bad Gateway nginx/1.14.0 (Ubuntu)** message, it means either of the following:
