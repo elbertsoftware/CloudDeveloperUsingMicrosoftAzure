@@ -161,7 +161,7 @@ The script above will take a few minutes to create VMSS and related resources. O
       # Replace `[public-ip]` with the public-ip address of your VMSS.
       nc -vz 52.233.72.121 50001
       nc -vz 52.233.72.121 50002
-      ssh -p [port number] udacityadmin@[public-ip]
+      ssh -p 50001 udacityadmin@52.233.72.121
       ```
 
 2. Once you log in to one of the VMSS instances, deploy the application manually: 
