@@ -251,7 +251,11 @@ The script above will take a few minutes to create VMSS and related resources. O
 
 1. For the VM Scale Set, create an autoscaling rule based on metrics.
 
-2. Trigger the conditions for the rule, causing an autoscaling event.
+2. Trigger the conditions for the rule, causing an autoscaling event:
+   ```bash
+   # Send stress requests to VMSS loadbalancer
+   ./autoscale-test.sh 
+   ```
 
 3. When complete, enable manual scale.
 
