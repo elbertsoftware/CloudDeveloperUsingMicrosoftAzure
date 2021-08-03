@@ -263,10 +263,15 @@ The script above will take a few minutes to create VMSS and related resources. O
 
 ### Step 5 - Deploy to AKS
 1. Before you make any changes further, create a new branch "Deploy_to_AKS". In this step, your frontend and backend will run in separate containers. 
-      ```bash
-      git checkout -b Deploy_to_AKS
-      ```
-
+   ```bash
+   # Create a new branch locally
+   git checkout -b Deploy_to_AKS
+   # Add, Commit, and Push your changes to the remote
+   git add -A     
+   git commit -m "Initial commit for Deploy_to_AKS branch"
+   # Create the new branch on github Deploy_to_AKS based on Deploy_to_VMSS
+   git branch --set-upstream-to=origin/Deploy_to_AKS Deploy_to_AKS
+   ```
 
 2. Edit the `main.py` file again to configure the Redis Connection. 
       ```py
