@@ -175,21 +175,11 @@ The script above will take a few minutes to create VMSS and related resources. O
 
 2. Once you log in to one of the VMSS instances, deploy the application manually: 
       ```bash
-      # Clone locally
-      git clone https://github.com/elbertsoftware/CloudDeveloperUsingMicrosoftAzure.git
-
-      cd CloudDeveloperUsingMicrosoftAzure
-      # Make sure, you are in the master branch
-      git branch
-
-      git checkout Deploy_to_VMSS
-      git pull --rebase
-      
       # Update sudo
       sudo apt update
 
       # Install Python 3.7
-      sudo apt install python3-apt
+      sudo apt install python3.7
       
       sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
       sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
@@ -214,6 +204,16 @@ The script above will take a few minutes to create VMSS and related resources. O
       # Clean up
       sudo apt autoremove --purge
       sudo apt autoclean
+
+      # Clone project from github to VM local
+      git clone https://github.com/elbertsoftware/CloudDeveloperUsingMicrosoftAzure.git
+
+      cd CloudDeveloperUsingMicrosoftAzure
+      # Make sure, you are in the master branch
+      git branch
+
+      git checkout Deploy_to_VMSS
+      git pull --rebase
 
       # Clone and navigate inside the project repo. We need the Flask frontend code
       # Install dependencies - necessary Python packages - redis, opencensus, opencensus-ext-azure, opencensus-ext-flask, flask
