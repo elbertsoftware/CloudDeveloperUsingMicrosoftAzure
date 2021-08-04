@@ -2,5 +2,11 @@
 
 while true;
 do
-wget http://52.233.72.121/ -P ./_temp &
+
+# VMSS
+# wget http://52.233.72.121/ -P ./_temp &
+
+# AKS
+wget http://20.69.75.177/ -P ./_temp &
+
 done

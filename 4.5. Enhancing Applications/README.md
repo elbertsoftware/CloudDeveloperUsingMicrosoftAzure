@@ -411,12 +411,12 @@ The script above will take a few minutes to create VMSS and related resources. O
    - AKS cluster --> Activity logs for the failed operations 
    - ACR web portal --> Repository --> azure-vote-front for failed events and logs. 
 
-9.  **Autoscaling AKS Cluster / More to achieve in the web portal**:
+9. **Autoscaling AKS Cluster / More to achieve in the web portal**:
     - Once the deployment is completed, go to Insights for the cluster. Observe the state of the cluster. Note the number of nodes and the number of containers.
     - Create an alert in Azure Monitor to trigger when the number of pods increases over a certain threshold.
     - Create an autoscaler by using the following Azure CLI command
       ```bash
-      kubectl autoscale deployment azure-vote-front --cpu-percent=10 --min=2 --max=10
+      kubectl autoscale deployment azure-vote-front --cpu-percent=10 --min=1 --max=5
       ```
 
     - Cause load on the system. After approximately 10 minutes, stop the load.
