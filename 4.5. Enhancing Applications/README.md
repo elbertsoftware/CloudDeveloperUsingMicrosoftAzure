@@ -316,19 +316,23 @@ The script above will take a few minutes to create VMSS and related resources. O
       docker-compose up -d --build
       # View the application at http://localhost:8080/
       # You will see two new images - "azure-vote-front:v1" and "mcr.microsoft.com/oss/bitnami/redis:6.0.8" (built from "redis:6.0.8")
-      docker images
+      docker image ls
       # Correspondingly, you will see two running containers - "azure-vote-front" and "azure-vote-back" 
-      docker ps
+      docker container ls
+
+      # Navigate to http://localhost:8080
+
       # Stop the application
       docker-compose down
       ```
       Troubleshoot: if you wish to log into the container and see its content, you can use:
       ```bash
       # Check if the frontend application is up and running 
-      docker exec -it azure-vote-front bash
-      ls
+      docker container exec -it azure-vote-front bash
+      ls # verify the azure-vote codebase is there
+      cd .. # verify the 'app' folder is there
       # Check if the Redis server is running
-      docker exec -it azure-vote-back bash
+      docker container exec -it azure-vote-back bash
       redis-cli ping
       ```
 

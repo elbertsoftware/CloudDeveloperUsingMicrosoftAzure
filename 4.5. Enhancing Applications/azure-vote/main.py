@@ -96,7 +96,22 @@ else:
     title = app.config['TITLE']
 
 # Redis Connection
-r = redis.Redis()
+# Redis Connection to a local server running on the same machine where the current FLask app is running
+# r = redis.Redis()
+
+# Redis Connection to another container (Azure Kubernetes Service deployment)
+redis_server = os.environ['REDIS']
+
+try:
+    if 'REDIS_PWD' in os.environ:
+        r = redis.StrictRedis(host=redis_server, port=6379,
+                              password=os.environ['REDIS_PWD'])
+    else:
+        r = redis.Redis(redis_server)
+
+    r.ping()
+except redis.ConnectionError:
+    exit('Failed to connect to Redis, terminating.')
 
 # Change title to host name to demo NLB
 if app.config['SHOWHOST'] == 'true':
@@ -197,7 +212,7 @@ def index():
 
 if __name__ == '__main__':
     # comment line below when deploying to VMSS
-    #app.run()  # local
-    
+    # app.run()  # local
+
     # uncomment the line below before deployment to VMSS
-    app.run(host='0.0.0.0', threaded=True, debug=True) # remote
+    app.run(host='0.0.0.0', threaded=True, debug=True)  # remote
