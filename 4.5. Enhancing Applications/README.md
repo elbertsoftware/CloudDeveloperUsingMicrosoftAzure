@@ -348,65 +348,79 @@ The script above will take a few minutes to create VMSS and related resources. O
       ./create-cluster.sh
       ```
 
-6. Next, create a Container Registry in Azure to store the image, and AKS can later pull them during deployment to the AKS cluster. Feel free to change the ACR name in place of `myacr202106` below.
+6. Next, create a Container Registry in Azure `ebsacr` to store the image, and AKS can later pull them during deployment to the AKS cluster:
       ```bash
       # Assuming the acdnd-c4-project resource group is still avaiable with you
-      # Create a resource group
+      # Create a resource group if it does not exist anymore
       az group create --name acdnd-c4-project --location westus2
+
       # ACR name should not have upper case letter
-      az acr create --resource-group acdnd-c4-project --name myacr202106 --sku Basic
+      az acr create --resource-group acdnd-c4-project --name ebsacr --sku Basic
+      
       # Log in to the ACR
-      az acr login --name myacr202106
+      az acr login --name ebsacr
+
       # Get the ACR login server name
       # To use the azure-vote-front container image with ACR, the image needs to be tagged with the login server address of your registry. 
       # Find the login server address of your registry
-      az acr show --name myacr202106 --query loginServer --output table
+      az acr show --name ebsacr --query loginServer --output table
+
       # Associate a tag to the local image. You can use a different tag (say v2, v3, v4, ....) everytime you edit the underlying image. 
-      docker tag azure-vote-front:v1 myacr202106.azurecr.io/azure-vote-front:v1
-      # Now you will see myacr202106.azurecr.io/azure-vote-front:v1 if you run docker images
+      docker image tag azure-vote-front:v1 ebsacr.azurecr.io/azure-vote-front:v1
+
+      # Now you will see ebsacr.azurecr.io/azure-vote-front:v1 if you run docker images
       # Push the local registry to remote ACR
-      docker push myacr202106.azurecr.io/azure-vote-front:v1
+      docker image push ebsacr.azurecr.io/azure-vote-front:v1
+
       # Verify if you image is up in the cloud.
-      az acr repository list --name myacr202106 --output table
+      az acr repository list --name ebsacr --output table
+
       # Associate the AKS cluster with the ACR repository
-      az aks update -n udacity-cluster -g acdnd-c4-project --attach-acr myacr202106
+      az aks update -n udacity-cluster -g acdnd-c4-project --attach-acr ebsacr
       ```
 
 7. Now, deploy the images to the AKS cluster:
       ```bash
       # Get the ACR login server name
-      az acr show --name myacr202106 --query loginServer --output table
-      # Make sure that the manifest file *azure-vote-all-in-one-redis.yaml*, has `myacr202106.azurecr.io/azure-vote-front:v1` as the image path.  
+      az acr show --name ebsacr --query loginServer --output table
+
+      # Make sure that the manifest file *azure-vote-all-in-one-redis.yaml*, has `ebsacr.azurecr.io/azure-vote-front:v1` as the image path.  
+      
       # Deploy the application. Run the command below from the parent directory where the *azure-vote-all-in-one-redis.yaml* file is present. 
       kubectl apply -f azure-vote-all-in-one-redis.yaml
+
       # Test the application at the External IP
       # It will take a few minutes to come alive. 
       kubectl get service azure-vote-front --watch
+
       # You can also verify that the service is running like this
       kubectl get service
+
       # Check the status of each node
       kubectl get pods
+
+      # Navigate to http://<EXTERNAL-IP>
+
       # In case you wish to change the image in ACR, you can redeploy using:
-      kubectl set image deployment azure-vote-front azure-vote-front=myacr202106.azurecr.io/azure-vote-front:v1      
+      kubectl set image deployment azure-vote-front azure-vote-front=ebsacr.azurecr.io/azure-vote-front:v1
+
       # Push your changes so far to the Github repo, preferably in the Deploy_to_AKS branch
       ```
 
-8. **Troubleshoot** - If your application is not accessible on the External IP of the AKS cluster, you will have to look into the ACR web portal --> Repository --> azure-vote-front for failed events and logs. 
+8. **Troubleshoot** - If your application is not accessible on the External IP of the AKS cluster, you will have to look into:
+   - AKS cluster --> Activity logs for the failed operations 
+   - ACR web portal --> Repository --> azure-vote-front for failed events and logs. 
 
+9.  **Autoscaling AKS Cluster / More to achieve in the web portal**:
+    - Once the deployment is completed, go to Insights for the cluster. Observe the state of the cluster. Note the number of nodes and the number of containers.
+    - Create an alert in Azure Monitor to trigger when the number of pods increases over a certain threshold.
+    - Create an autoscaler by using the following Azure CLI command
+      ```bash
+      kubectl autoscale deployment azure-vote-front --cpu-percent=10 --min=2 --max=10
+      ```
 
-9. **More to achieve in the web portal**:
-   - Once the deployment is completed, go to Insights for the cluster. Observe the state of the cluster. Note the number of nodes and the number of containers.
-
-   - Create an alert in Azure Monitor to trigger when the number of pods increases over a certain threshold.
-
-   - Create an autoscaler by using the following Azure CLI command—`kubectl autoscale deployment azure-vote-front --cpu-percent=70 --min=1 --max=10`. 
-
-   - Cause load on the system. After approximately 10 minutes, stop the load.
-
-   - Observe the state of the cluster. Note the number of pods; it should have increased and should now be decreasing.
-
-
-
+    - Cause load on the system. After approximately 10 minutes, stop the load.
+    - Observe the state of the cluster. Note the number of pods; it should have increased and should now be decreasing.
 ### Step 5 - Runbook
 
 1. Create an Azure Automation Account
