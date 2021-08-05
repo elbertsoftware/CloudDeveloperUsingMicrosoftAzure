@@ -15,7 +15,7 @@ POSTGRES_USER = 'dbadmin@techconfdbserver'
 POSTGRES_PW = 'Postgres65432!'
 
 ADMIN_EMAIL_ADDRESS: 'info@techconf.com'
-SENDGRID_API_KEY = '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'
+SENDGRID_API_KEY = 'SG.4Q...XA'
 
 
 def main(msg: func.ServiceBusMessage):
