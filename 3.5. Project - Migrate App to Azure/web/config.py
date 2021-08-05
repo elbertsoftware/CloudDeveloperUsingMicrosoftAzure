@@ -22,7 +22,7 @@ class BaseConfig:
 
     ADMIN_EMAIL_ADDRESS = 'info@techconf.com'
     # Configuration not required, required SendGrid Account
-    SENDGRID_API_KEY = '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'
+    SENDGRID_API_KEY = 'SG.4Q...XA'
 
 
 class DevelopmentConfig(BaseConfig):
