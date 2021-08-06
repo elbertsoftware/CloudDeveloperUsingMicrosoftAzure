@@ -32,7 +32,7 @@ In this project, you'll be tasked to do the following:
     └── runbook
 ```
 
-
+---
 # Part 1. Getting Started
 
 1. Prerequisites
@@ -129,8 +129,6 @@ If you want to run the application on localhost, follow the steps below; otherwi
       ``` 
 
 The script above will take a few minutes to create VMSS and related resources. Once the script is complete, you can go to Azure portal and look for the **acdnd-c4-project** resource group. 
-
-
 
 ### Step 2 - Application Insights & Log Analytics
 1. Create an Application Insights resource. It will automatically create a Log Analytics workspace in addition. 
@@ -246,7 +244,6 @@ The script above will take a few minutes to create VMSS and related resources. O
 
    - Navigate to the Usage --> Events service. Create a query to view the event telemetry.  
 
-
 ### Step 4 - Autoscaling VMSS
 
 1. For the VM Scale Set, create an autoscaling rule based on metrics.
@@ -258,8 +255,6 @@ The script above will take a few minutes to create VMSS and related resources. O
    ```
 
 3. When complete, enable manual scale.
-
-
 
 ### Step 5 - Deploy to AKS
 1. Before you make any changes further, create a new branch "Deploy_to_AKS". In this step, your frontend and backend will run in separate containers. 
@@ -416,11 +411,12 @@ The script above will take a few minutes to create VMSS and related resources. O
     - Create an alert in Azure Monitor to trigger when the number of pods increases over a certain threshold.
     - Create an autoscaler by using the following Azure CLI command
       ```bash
-      kubectl autoscale deployment azure-vote-front --cpu-percent=10 --min=1 --max=5
+      kubectl autoscale deployment azure-vote-front --cpu-percent=10 --min=2 --max=5
       ```
 
     - Cause load on the system. After approximately 10 minutes, stop the load.
     - Observe the state of the cluster. Note the number of pods; it should have increased and should now be decreasing.
+
 ### Step 5 - Runbook
 
 1. Create an Azure Automation Account
@@ -439,13 +435,11 @@ The script above will take a few minutes to create VMSS and related resources. O
 
 1. The `main.py` which will show the code for the Application Insights telemety data.
 
-
 2. Screenshots for the kubernetes cluster which include:
    **Note**: Place all screenshots for Kubernetes Cluster in the `submission-screenshots/kubernetes-cluster` directory
    - The output of the Horizontal Pod Autoscaler, showing an increase in the number of pods.
    - The Application Insights metrics which show the increase in the number of pods.
    - The email you received from the alert when the pod count increased.
-
 
 3. Screenshots for the Application Insights which include:
    **Note**: Place all screenshots for Application Insights in the `submission-screenshots/application-insights` directory
@@ -454,14 +448,12 @@ The script above will take a few minutes to create VMSS and related resources. O
    - The output of the `traces` query in Azure Log Analytics.
    - The chart created from the output of the `traces` query.
 
-
 4. Screenshots for the Autoscaling of the VM Scale Set which include:
    **Note**: Place all screenshots for Autoscaling VMSS in the `submission-screenshots/autoscaling-vmss` directory
    - The conditions for which autoscaling will be triggered (found in the 'Scaling' item in the VM Scale Set).
    - The Activity log of the VM scale set which shows that it scaled up with timestamp.
    - The new instances being created.
    - The metrics which show the load increasing, then decreasing once scaled up with timestamp.
-
 
 5. Screenshots for the Azure Runbook which include:
    **Note**: Place all screenshots for RunBook in the `submission-screenshots/runbook` directory
