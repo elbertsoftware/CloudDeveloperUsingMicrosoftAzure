@@ -415,7 +415,10 @@ The script above will take a few minutes to create VMSS and related resources. O
       ```
 
     - Cause load on the system. After approximately 10 minutes, stop the load.
-    - Observe the state of the cluster. Note the number of pods; it should have increased and should now be decreasing.
+    - Observe the state of the cluster. Note the number of pods; it should have increased and should now be decreasing:
+      ```bash
+      kubectl get hpa
+      ```
 
 ### Step 5 - Runbook
 
